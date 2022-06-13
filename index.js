@@ -9,43 +9,45 @@ program
   .option('-e, --email <type>', 'user email')
   .option('-p, --phone <type>', 'user phone');
 
-program.parse(process.argv);
+program.parse();
 
 const argv = program.opts();
 
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
-    case 'list':
+      case 'list':
           const contacts = await listContacts();
           console.table(contacts);
-      break;
+          break;
 
-    case 'get':
+      case 'get':
           const contactById = await getContactById(id);
           if (contactById) {
               console.log(contactById);
               return;
           }
           console.log('Not found');
-      break;
+          break;
 
-    case 'add':
+      case 'add':
           const contact = await addContact(name, email, phone)
-          console.log(contact)
-      break;
+          console.log(contact);
+          break;
 
-    case 'remove':
+      case 'remove':
           const contactRemove = await removeContact(id);
-             if (contactRemove) {
+          if (contactRemove) {
               console.log(contactRemove);
               return;
           }
           console.log('Not found');
-      break;
+          break;
 
-    default:
-      console.warn('\x1B[31m Unknown action type!');
+      default:
+          console.warn('\x1B[31m Unknown action type!');
   }
 }
 
-invokeAction(argv);
+(async () => {
+    await invokeAction(argv)
+})();
